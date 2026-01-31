@@ -1,0 +1,81 @@
+body {
+  font-family: sans-serif;
+  display:inline;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+
+.sudoku {
+  display: grid;
+  grid-template-columns: repeat(9, 55px);
+  grid-template-rows: repeat(9, 55px);
+  gap: 0;
+  width: fit-content;
+  border: 3px solid black;
+  margin: 20px auto;
+}
+
+
+.cell {
+  width: 55px;
+  height: 55px;
+  border: 1px solid #999;
+  text-align: center;
+  font-size: 24px;
+  outline: none;
+  box-sizing: border-box;
+  caret-color: transparent; 
+}
+
+.selected {
+  background-color: #cce5ff !important;
+}
+
+.border-right {
+  border-right: 3px solid #000;
+}
+
+.border-bottom {
+  border-bottom: 3px solid #000;
+}
+
+.original {
+  font-weight:bolder;
+  background-color: hsl(0, 0%, 100%);
+}
+
+.invalid {
+  color: red;
+}
+
+.related {
+  background-color: #fbe5fc
+}
+
+.selected {
+  background-color: #f4d1f6 !important;
+}
+
+.number-panel {
+  display: grid;
+  grid-template-columns: repeat(9, 49px);
+  gap: 7px;
+  margin-top: 20px;
+  justify-content: center;
+}
+
+.number-panel button {
+  height: 49px;
+  font-size: 20px;
+  cursor: pointer;
+  border: none;
+  background-color: #e2dddd;
+  border-radius: 3px;
+}
+
+.number-panel button:hover {
+  background-color: #d6cdcd;
+}
+
