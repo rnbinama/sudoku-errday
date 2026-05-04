@@ -1,6 +1,6 @@
 body {
   font-family: sans-serif;
-  display:inline;
+  display: inline;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
@@ -9,29 +9,30 @@ body {
 
 .sudoku {
   display: grid;
-  grid-template-columns: repeat(9, 55px);
-  grid-template-rows: repeat(9, 55px);
+  grid-template-columns: repeat(9, minmax(0, 1fr));
+
+  width: min(90vw, 495px);
+  height: min(90vw, 495px); /* ensures perfect square */
   gap: 0;
-  width: fit-content;
-  border: 3px solid black;
   margin: 20px auto;
+  
+  border: 3px solid black;
+
 }
 
 
 .cell {
-  width: 55px;
-  height: 55px;
+  width: 100%;
+  height: 100%;
+  font-size: clamp(14px, 4vw, 24px);
   border: 1px solid #999;
   text-align: center;
-  font-size: 24px;
-  outline: none;
   box-sizing: border-box;
   caret-color: transparent; 
+  outline: none;
 }
 
-.selected {
-  background-color: #cce5ff !important;
-}
+
 
 .border-right {
   border-right: 3px solid #000;
@@ -55,15 +56,16 @@ body {
 }
 
 .selected {
-  background-color: #f4d1f6 !important;
+  background-color: #f4d1f6;
 }
 
 .number-panel {
   display: grid;
-  grid-template-columns: repeat(9, 49px);
-  gap: 7px;
-  margin-top: 20px;
-  justify-content: center;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  width: 90vw;
+  max-width: 300px;
+  margin: 20px auto;
 }
 
 .number-panel button {
@@ -79,3 +81,30 @@ body {
   background-color: #d6cdcd;
 }
 
+.win-screen {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+  z-index: 1000;
+  text-align: center;
+  width: 80%;
+  max-width: 350px;
+}
+
+.blurred {
+  filter: blur(4px);
+  pointer-events: none;
+  user-select: none;
+  opacity: 0.6;
+}
+
+.app {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}

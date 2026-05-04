@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
 
 const initialGrid = [
   [5, 3, null, null, 7, null, null, null, null],
@@ -20,8 +21,18 @@ export default function Sudoku() {
   const [grid, setGrid] = useState(initialGrid);
   const [selected, setSelected] = useState({ row: 0, col: 0 });
   const [won, setWon] = useState(false);
+  const [history, setHistory] = useState([]);
+  const [gameOver, setGameOver] = useState(false);
+
+  useEffect(() => {
+      if (!gameOver && checkWin(grid)) {
+        setWon(true);
+        setGameOver(true);
+      }
+    }, [grid, gameOver]);
 
   function handleChange(row, col, value) {
+  if (gameOver) return;
   if (originalCells[row][col]) return;
 
   if (value === "" || /^[1-9]$/.test(value)) {
@@ -34,7 +45,10 @@ export default function Sudoku() {
 
 
   function handleKeyDown(e) {
+  if (gameOver) return;
   let { row, col } = selected;
+
+  setHistory(prev => [...prev, JSON.parse(JSON.stringify(grid))]);
 
   if (e.key === "ArrowUp") row = Math.max(0, row - 1);
   else if (e.key === "ArrowDown") row = Math.min(8, row + 1);
@@ -45,6 +59,7 @@ export default function Sudoku() {
       const copy = grid.map(r => [...r]);
       copy[row][col] = Number(e.key);
       setGrid(copy);
+      checkGameState(copy);
     }
   }
   else if (e.key === "Backspace" || e.key === "Delete") {
@@ -52,6 +67,7 @@ export default function Sudoku() {
       const copy = grid.map(r => [...r]);
       copy[row][col] = null;
       setGrid(copy);
+      checkGameState(copy);
     }
   }
 
@@ -98,16 +114,18 @@ function isRelatedCell(i, j) {
 }
 
 function enterNumber(value) {
+  if (gameOver) return;
+
   const { row, col } = selected;
   if (originalCells[row][col]) return;
+
+  setHistory(prev => [...prev, JSON.parse(JSON.stringify(grid))]);
 
   const copy = grid.map(r => [...r]);
   copy[row][col] = value;
   setGrid(copy);
 
-  if (checkWin(copy)) {
-    setWon(true);
-}
+  checkGameState(copy);
 }
 
 function checkWin(grid) {
@@ -121,13 +139,35 @@ function checkWin(grid) {
   return true;
 }
 
+function undo() {
+  if (history.length === 0) return;
+
+  const previous = history[history.length - 1];
+  setGrid(previous);
+  setHistory(history.slice(0, -1));
+}
+
+function checkGameState(updatedGrid) {
+  if (checkWin(updatedGrid)) {
+    setWon(true);
+    setGameOver(true);
+  }
+}
 
 
 
 
   return (
+    <div className="app">
     <div style={{ textAlign: "center" }}>
-      {won && <h2>🎉 You solved it! 🎉</h2>}
+      {won && ( <div className="win-screen">
+                  <h1>🎉 Hooray! 🎉</h1>
+                  <p>You solved today’s puzzle.</p>
+                  <p>Come back tomorrow for a new challenge 🧩</p>
+                </div>
+        )}
+
+    <div className={won ? "game blurred" : "game"}>
 
       <div className="sudoku" tabIndex="0" onKeyDown={handleKeyDown}>
         {grid.map((row, i) =>
@@ -151,12 +191,24 @@ function checkWin(grid) {
       </div>
 
       <div className="number-panel">
-        {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(num => (
+        {[1, 2, 3, 4, 5].map(num => (
           <button key={num} onClick={() => enterNumber(num)}>
             {num}
           </button>
         ))}
-      </div>
+
+        {[6, 7, 8, 9].map(num => (
+          <button key={num} onClick={() => enterNumber(num)}>
+            {num}
+          </button>
+      ))}
+      <button className="undo-btn" onClick={undo} disabled={history.length === 0}>
+        ↩
+      </button>
     </div>
+  </div>
+</div>
+</div>
+
   );
 }
