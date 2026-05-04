@@ -154,6 +154,18 @@ function checkGameState(updatedGrid) {
   }
 }
 
+function deleteCell() {
+  if (gameOver) return;
+
+  const { row, col } = selected;
+
+  if (originalCells[row][col]) return;
+
+  const copy = grid.map(r => [...r]);
+  copy[row][col] = null;
+
+  setGrid(copy);
+}
 
 
 
@@ -202,8 +214,8 @@ function checkGameState(updatedGrid) {
             {num}
           </button>
       ))}
-      <button className="undo-btn" onClick={undo} disabled={history.length === 0}>
-        ↩
+      <button className="delete-btn" onClick={deleteCell}>
+        ⌫
       </button>
     </div>
   </div>
